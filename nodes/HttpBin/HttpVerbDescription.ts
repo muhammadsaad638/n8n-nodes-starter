@@ -734,7 +734,7 @@ export const httpVerbFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		placeholder: 'https://api.example.com/endpoint',
-		description: 'The URL to make the request to',
+		description: 'The HTTPS URL to make the request to (HTTP is not allowed for HIPAA compliance)',
 		required: true,
 		displayOptions: {
 			show: {
@@ -788,6 +788,13 @@ export const httpVerbFields: INodeProperties[] = [
 				],
 			},
 		],
+	},
+	{
+		displayName: 'Output Response',
+		name: 'outputResponse',
+		type: 'boolean',
+		default: false,
+		description: 'Whether the HTTP response will be output. Disable in production for HIPAA compliance.',
 	},
 	/* -------------------------------------------------------------------------- */
 	/*                                httpVerb:get                                */

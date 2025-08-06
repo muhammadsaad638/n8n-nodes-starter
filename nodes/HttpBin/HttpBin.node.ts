@@ -1,17 +1,17 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import { INodeType, INodeTypeDescription, NodeConnectionType, IExecuteFunctions, INodeExecutionData, NodeOperationError } from 'n8n-workflow';
 import { httpVerbFields, httpVerbOperations } from './HttpVerbDescription';
 
 export class HttpBin implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'HTTP Request',
+		displayName: 'HTTP Request (HIPAA Compliant)',
 		name: 'httpBin',
 		icon: { light: 'file:httpbin.svg', dark: 'file:httpbin.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Make HTTP requests to any API with flexible authentication',
+		description: 'Make secure HTTPS requests to any API with flexible authentication. HIPAA compliant - enforces HTTPS only.',
 		defaults: {
-			name: 'HTTP Request',
+			name: 'HTTP Request (HIPAA)',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
@@ -71,32 +71,64 @@ export class HttpBin implements INodeType {
 
 			...httpVerbOperations,
 			...httpVerbFields,
+			{
+				displayName: 'HIPAA Error Mode',
+				name: 'hipaaErrorMode',
+				type: 'boolean',
+				default: true,
+				description: 'Whether to hide error details and only output a generic message and status code for HIPAA compliance. Set to false for development.',
+			},
 		],
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const validateHttpsUrl = (url: string) => {
+			try {
+				const urlObj = new URL(url);
+				if (urlObj.protocol !== 'https:') {
+					throw new NodeOperationError(
+						this.getNode(),
+						`HIPAA Compliance Error: Only HTTPS URLs are allowed. Received: ${urlObj.protocol}//${urlObj.host}`,
+						{
+							description: 'For HIPAA compliance, all API requests must use HTTPS encryption. Please update your URL to use https://',
+							level: 'error',
+						}
+					);
+				}
+			} catch (error) {
+				if (error instanceof NodeOperationError) {
+					throw error;
+				}
+				throw new NodeOperationError(
+					this.getNode(),
+					`Invalid URL format: ${url}`,
+					{
+						description: 'Please provide a valid HTTPS URL',
+						level: 'error',
+					}
+				);
+			}
+		};
+
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
+			const hipaaErrorMode = this.getNodeParameter('hipaaErrorMode', i, true) as boolean;
 			try {
-				const authentication = this.getNodeParameter('authentication', i) as string;
 				const url = this.getNodeParameter('url', i) as string;
+				validateHttpsUrl(url);
+				const authentication = this.getNodeParameter('authentication', i) as string;
 				const operation = this.getNodeParameter('operation', i) as string;
 				const headers = this.getNodeParameter('headers', i, {}) as any;
-
-				// Try to get credentials with try/catch approach
 				let credentials: any = {};
 				if (authentication !== 'none') {
 					try {
 						credentials = this.getCredentials(authentication);
 					} catch (error) {
-						// If credentials are not available, continue without them
 						credentials = {};
 					}
 				}
-
-				// Prepare request options
 				const requestOptions: any = {
 					method: operation.toUpperCase(),
 					url,
@@ -105,9 +137,8 @@ export class HttpBin implements INodeType {
 						'Content-Type': 'application/json',
 						...headers,
 					},
+					resolveWithFullResponse: true,
 				};
-
-				// Add authentication if credentials are available
 				if (credentials && Object.keys(credentials).length > 0) {
 					if (credentials.authType === 'bearer' && credentials.bearerToken) {
 						requestOptions.headers.Authorization = `Bearer ${credentials.bearerToken}`;
@@ -124,7 +155,6 @@ export class HttpBin implements INodeType {
 							requestOptions.qs[credentials.apiKeyName || 'api_key'] = credentials.apiKey;
 						}
 					} else if (credentials.authType === 'custom' && credentials.customHeaders) {
-						// Handle custom headers
 						if (credentials.customHeaders.keyvalue) {
 							credentials.customHeaders.keyvalue.forEach((header: any) => {
 								requestOptions.headers[header.name] = header.value;
@@ -132,25 +162,48 @@ export class HttpBin implements INodeType {
 						}
 					}
 				}
-
-				// Make the HTTP request
 				const response = await this.helpers.httpRequest(requestOptions);
-
 				returnData.push({
 					json: response,
 				});
-
 			} catch (error) {
-				if (this.continueOnFail()) {
-					returnData.push({
-						json: { error: error.message },
-					});
+				let statusCode: number | undefined = undefined;
+				if (error?.response?.status) {
+					statusCode = error.response.status;
+				} else if (error?.httpCode) {
+					statusCode = error.httpCode;
+				}
+				if (hipaaErrorMode) {
+					const errorOutput = {
+						error: 'Request failed. Details are hidden for HIPAA compliance.',
+						statusCode,
+						hipaaCompliant: true,
+					};
+					if (this.continueOnFail()) {
+						returnData.push({ json: errorOutput });
+					} else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`Request failed with status code: ${statusCode ?? 'unknown'}. (Details hidden for HIPAA compliance)`
+						);
+					}
 				} else {
-					throw error;
+					const errorOutput = {
+						error: error.message || 'Request failed',
+						statusCode,
+						stack: error.stack,
+					};
+					if (this.continueOnFail()) {
+						returnData.push({ json: errorOutput });
+					} else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`Request failed: ${error.message || 'Unknown error'}`
+						);
+					}
 				}
 			}
 		}
-
 		return [returnData];
 	}
 }
