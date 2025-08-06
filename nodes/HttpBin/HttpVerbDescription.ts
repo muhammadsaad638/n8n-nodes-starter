@@ -85,636 +85,6 @@ export const httpVerbOperations: INodeProperties[] = [
 	},
 ];
 
-// Here we define what to show when the `get` operation is selected.
-// We do that by adding `operation: ["get"]` to `displayOptions.show`
-const getOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'queryParameter',
-		description: 'Select type of data to send [Query Parameters]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['get'],
-			},
-		},
-		type: 'options',
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-		],
-		required: true,
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['get'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
-// Here we define what to show when the POST Operation is selected.
-const postOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'jsonData',
-		description: 'Select type of data to send [Query Parameter Arguments, JSON-Body]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['post'],
-			},
-		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-			{
-				name: 'JSON',
-				value: 'jsonData',
-			},
-		],
-		required: true,
-		type: 'options',
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['post'],
-				typeofData: ['queryParameter'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-	{
-		displayName: 'JSON Object',
-		name: 'arguments',
-		default: {},
-		description: "The request's JSON properties",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['post'],
-				typeofData: ['jsonData'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of JSON property',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'body',
-							},
-						},
-						required: true,
-						description: 'Value of JSON property',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
-// Here we define what to show when the PUT Operation is selected.
-const putOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'jsonData',
-		description: 'Select type of data to send [Query Parameter Arguments, JSON-Body]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['put'],
-			},
-		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-			{
-				name: 'JSON',
-				value: 'jsonData',
-			},
-		],
-		required: true,
-		type: 'options',
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['put'],
-				typeofData: ['queryParameter'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-	{
-		displayName: 'JSON Object',
-		name: 'arguments',
-		default: {},
-		description: "The request's JSON properties",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['put'],
-				typeofData: ['jsonData'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of JSON property',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'body',
-							},
-						},
-						required: true,
-						description: 'Value of JSON property',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
-// Here we define what to show when the PATCH Operation is selected.
-const patchOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'jsonData',
-		description: 'Select type of data to send [Query Parameter Arguments, JSON-Body]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['patch'],
-			},
-		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-			{
-				name: 'JSON',
-				value: 'jsonData',
-			},
-		],
-		required: true,
-		type: 'options',
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['patch'],
-				typeofData: ['queryParameter'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-	{
-		displayName: 'JSON Object',
-		name: 'arguments',
-		default: {},
-		description: "The request's JSON properties",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['patch'],
-				typeofData: ['jsonData'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of JSON property',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'body',
-							},
-						},
-						required: true,
-						description: 'Value of JSON property',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
-// Here we define what to show when the DELETE Operation is selected.
-// We do that by adding `operation: ["delete"]` to `displayOptions.show`
-const deleteOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'queryParameter',
-		description: 'Select type of data to send [Query Parameter Arguments, JSON-Body]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
-			},
-		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-			{
-				name: 'JSON',
-				value: 'jsonData',
-			},
-		],
-		required: true,
-		type: 'options',
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
-				typeofData: ['queryParameter'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-	{
-		displayName: 'JSON Object',
-		name: 'arguments',
-		default: {},
-		description: "The request's JSON properties",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['delete'],
-				typeofData: ['jsonData'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of JSON property',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'body',
-							},
-						},
-						required: true,
-						description: 'Value of JSON property',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
-// Here we define what to show when the HEAD Operation is selected.
-const headOperation: INodeProperties[] = [
-	{
-		displayName: 'Type of Data',
-		name: 'typeofData',
-		default: 'queryParameter',
-		description: 'Select type of data to send [Query Parameters]',
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['head'],
-			},
-		},
-		options: [
-			{
-				name: 'Query',
-				value: 'queryParameter',
-			},
-		],
-		required: true,
-		type: 'options',
-	},
-	{
-		displayName: 'Query Parameters',
-		name: 'arguments',
-		default: {},
-		description: "The request's query parameters",
-		displayOptions: {
-			show: {
-				resource: ['httpVerb'],
-				operation: ['head'],
-			},
-		},
-		options: [
-			{
-				name: 'keyvalue',
-				displayName: 'Key:Value',
-				values: [
-					{
-						displayName: 'Key',
-						name: 'key',
-						type: 'string',
-						default: '',
-						required: true,
-						description: 'Key of query parameter',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						routing: {
-							send: {
-								property: '={{$parent.key}}',
-								type: 'query',
-							},
-						},
-						required: true,
-						description: 'Value of query parameter',
-					},
-				],
-			},
-		],
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-	},
-];
-
 export const httpVerbFields: INodeProperties[] = [
 	{
 		displayName: 'Authentication',
@@ -748,46 +118,387 @@ export const httpVerbFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Headers',
-		name: 'headers',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-		placeholder: 'Add Header',
-		default: {},
-		description: 'The headers to send with the request',
+		displayName: 'Send Query Parameters',
+		name: 'sendQuery',
+		type: 'boolean',
+		default: false,
+		noDataExpression: true,
+		description: 'Whether the request has query params or not',
 		displayOptions: {
 			show: {
 				resource: ['httpVerb'],
 			},
 		},
+	},
+	{
+		displayName: 'Specify Query Parameters',
+		name: 'specifyQuery',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendQuery: [true],
+			},
+		},
 		options: [
 			{
-				name: 'keyvalue',
-				displayName: 'Header',
+				name: 'Using Fields Below',
+				value: 'keypair',
+			},
+			{
+				name: 'Using JSON',
+				value: 'json',
+			},
+		],
+		default: 'keypair',
+	},
+	{
+		displayName: 'Query Parameters',
+		name: 'queryParameters',
+		type: 'fixedCollection',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendQuery: [true],
+				specifyQuery: ['keypair'],
+			},
+		},
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Parameter',
+		default: {
+			parameters: [
+				{
+					name: '',
+					value: '',
+				},
+			],
+		},
+		options: [
+			{
+				name: 'parameters',
+				displayName: 'Parameter',
 				values: [
 					{
 						displayName: 'Name',
 						name: 'name',
 						type: 'string',
 						default: '',
-						placeholder: 'Content-Type',
-						description: 'Name of the header',
-						required: true,
 					},
 					{
 						displayName: 'Value',
 						name: 'value',
 						type: 'string',
 						default: '',
-						placeholder: 'application/json',
-						description: 'Value of the header',
-						required: true,
 					},
 				],
 			},
 		],
+	},
+	{
+		displayName: 'JSON',
+		name: 'jsonQuery',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendQuery: [true],
+				specifyQuery: ['json'],
+			},
+		},
+		default: '',
+	},
+	{
+		displayName: 'Send Headers',
+		name: 'sendHeaders',
+		type: 'boolean',
+		default: false,
+		noDataExpression: true,
+		description: 'Whether the request has headers or not',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+			},
+		},
+	},
+	{
+		displayName: 'Specify Headers',
+		name: 'specifyHeaders',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendHeaders: [true],
+			},
+		},
+		options: [
+			{
+				name: 'Using Fields Below',
+				value: 'keypair',
+			},
+			{
+				name: 'Using JSON',
+				value: 'json',
+			},
+		],
+		default: 'keypair',
+	},
+	{
+		displayName: 'Header Parameters',
+		name: 'headerParameters',
+		type: 'fixedCollection',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendHeaders: [true],
+				specifyHeaders: ['keypair'],
+			},
+		},
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Parameter',
+		default: {
+			parameters: [
+				{
+					name: '',
+					value: '',
+				},
+			],
+		},
+		options: [
+			{
+				name: 'parameters',
+				displayName: 'Parameter',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'JSON',
+		name: 'jsonHeaders',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendHeaders: [true],
+				specifyHeaders: ['json'],
+			},
+		},
+		default: '',
+	},
+	{
+		displayName: 'Send Body',
+		name: 'sendBody',
+		type: 'boolean',
+		default: false,
+		noDataExpression: true,
+		description: 'Whether the request has a body or not',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+			},
+		},
+	},
+	{
+		displayName: 'Body Content Type',
+		name: 'contentType',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+			},
+		},
+		options: [
+			{
+				name: 'JSON',
+				value: 'json',
+			},
+			{
+				name: 'Form Urlencoded',
+				value: 'form-urlencoded',
+			},
+			{
+				name: 'Raw',
+				value: 'raw',
+			},
+		],
+		default: 'json',
+		description: 'Content-Type to use to send body parameters',
+	},
+	{
+		displayName: 'Specify Body',
+		name: 'specifyBody',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['json'],
+			},
+		},
+		options: [
+			{
+				name: 'Using Fields Below',
+				value: 'keypair',
+			},
+			{
+				name: 'Using JSON',
+				value: 'json',
+			},
+		],
+		default: 'keypair',
+		description: 'The body can be specified using explicit fields (keypair) or using a JavaScript object (JSON)',
+	},
+	{
+		displayName: 'Body Parameters',
+		name: 'bodyParameters',
+		type: 'fixedCollection',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['json'],
+				specifyBody: ['keypair'],
+			},
+		},
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Parameter',
+		default: {
+			parameters: [
+				{
+					name: '',
+					value: '',
+				},
+			],
+		},
+		options: [
+			{
+				name: 'parameters',
+				displayName: 'Parameter',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'ID of the field to set. Choose from the list, or specify an ID using an expression.',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'Value of the field to set',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'JSON',
+		name: 'jsonBody',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['json'],
+				specifyBody: ['json'],
+			},
+		},
+		default: '',
+	},
+	{
+		displayName: 'Body Parameters',
+		name: 'bodyParameters',
+		type: 'fixedCollection',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['form-urlencoded'],
+			},
+		},
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Parameter',
+		default: {
+			parameters: [
+				{
+					name: '',
+					value: '',
+				},
+			],
+		},
+		options: [
+			{
+				name: 'parameters',
+				displayName: 'Parameter',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'ID of the field to set. Choose from the list, or specify an ID using an expression.',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'Value of the field to set',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Body',
+		name: 'body',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['raw'],
+			},
+		},
+		default: '',
+		placeholder: 'Enter raw body content',
+	},
+	{
+		displayName: 'Content Type',
+		name: 'rawContentType',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['httpVerb'],
+				sendBody: [true],
+				contentType: ['raw'],
+			},
+		},
+		default: '',
+		placeholder: 'text/html',
 	},
 	{
 		displayName: 'Output Response',
@@ -796,33 +507,5 @@ export const httpVerbFields: INodeProperties[] = [
 		default: false,
 		description: 'Whether the HTTP response will be output. Disable in production for HIPAA compliance.',
 	},
-	/* -------------------------------------------------------------------------- */
-	/*                                httpVerb:get                                */
-	/* -------------------------------------------------------------------------- */
-	...getOperation,
-
-	/* -------------------------------------------------------------------------- */
-	/*                              httpVerb:post                                 */
-	/* -------------------------------------------------------------------------- */
-	...postOperation,
-
-	/* -------------------------------------------------------------------------- */
-	/*                               httpVerb:put                                 */
-	/* -------------------------------------------------------------------------- */
-	...putOperation,
-
-	/* -------------------------------------------------------------------------- */
-	/*                             httpVerb:patch                                 */
-	/* -------------------------------------------------------------------------- */
-	...patchOperation,
-
-	/* -------------------------------------------------------------------------- */
-	/*                              httpVerb:delete                               */
-	/* -------------------------------------------------------------------------- */
-	...deleteOperation,
-
-	/* -------------------------------------------------------------------------- */
-	/*                              httpVerb:head                                 */
-	/* -------------------------------------------------------------------------- */
-	...headOperation,
 ];
+

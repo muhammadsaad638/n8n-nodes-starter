@@ -120,7 +120,123 @@ export class HttpBin implements INodeType {
 				validateHttpsUrl(url);
 				const authentication = this.getNodeParameter('authentication', i) as string;
 				const operation = this.getNodeParameter('operation', i) as string;
-				const headers = this.getNodeParameter('headers', i, {}) as any;
+
+				// Handle query parameters like the official n8n HTTP node
+				const sendQuery = this.getNodeParameter('sendQuery', i, false) as boolean;
+				const specifyQuery = this.getNodeParameter('specifyQuery', i, 'keypair') as string;
+				const queryParameters = this.getNodeParameter('queryParameters.parameters', i, []) as [{ name: string; value: string }];
+				const jsonQueryParameter = this.getNodeParameter('jsonQuery', i, '') as string;
+
+				let queryParams: any = {};
+				if (sendQuery && queryParameters) {
+					if (specifyQuery === 'keypair') {
+						// Process key-value pairs
+						queryParameters.forEach((param) => {
+							if (param.name) {
+								queryParams[param.name] = param.value;
+							}
+						});
+					} else if (specifyQuery === 'json') {
+						// Process JSON input
+						try {
+							if (jsonQueryParameter) {
+								queryParams = JSON.parse(jsonQueryParameter);
+							}
+						} catch (error) {
+							throw new NodeOperationError(
+								this.getNode(),
+								'JSON parameter needs to be valid JSON',
+								{
+									itemIndex: i,
+								}
+							);
+						}
+					}
+				}
+
+				// Handle headers like the official n8n HTTP node
+				const sendHeaders = this.getNodeParameter('sendHeaders', i, false) as boolean;
+				const specifyHeaders = this.getNodeParameter('specifyHeaders', i, 'keypair') as string;
+				const headerParameters = this.getNodeParameter('headerParameters.parameters', i, []) as [{ name: string; value: string }];
+				const jsonHeadersParameter = this.getNodeParameter('jsonHeaders', i, '') as string;
+
+				let additionalHeaders: any = {};
+				if (sendHeaders && headerParameters) {
+					if (specifyHeaders === 'keypair') {
+						// Process key-value pairs
+						headerParameters.forEach((header) => {
+							if (header.name) {
+								additionalHeaders[header.name] = header.value;
+							}
+						});
+					} else if (specifyHeaders === 'json') {
+						// Process JSON input
+						try {
+							if (jsonHeadersParameter) {
+								additionalHeaders = JSON.parse(jsonHeadersParameter);
+							}
+						} catch (error) {
+							throw new NodeOperationError(
+								this.getNode(),
+								'JSON parameter needs to be valid JSON',
+								{
+									itemIndex: i,
+								}
+							);
+						}
+					}
+				}
+
+				// Handle body like the official n8n HTTP node
+				const sendBody = this.getNodeParameter('sendBody', i, false) as boolean;
+				const bodyContentType = this.getNodeParameter('contentType', i, 'json') as string;
+				const specifyBody = this.getNodeParameter('specifyBody', i, 'keypair') as string;
+				const bodyParameters = this.getNodeParameter('bodyParameters.parameters', i, []) as [{ name: string; value: string }];
+				const jsonBodyParameter = this.getNodeParameter('jsonBody', i, '') as string;
+				const rawBody = this.getNodeParameter('body', i, '') as string;
+				const rawContentType = this.getNodeParameter('rawContentType', i, '') as string;
+
+				let requestBody: any = undefined;
+				if (sendBody && bodyParameters) {
+					if (bodyContentType === 'json') {
+						if (specifyBody === 'keypair') {
+							// Process key-value pairs for JSON
+							requestBody = {};
+							bodyParameters.forEach((param) => {
+								if (param.name) {
+									requestBody[param.name] = param.value;
+								}
+							});
+						} else if (specifyBody === 'json') {
+							// Process JSON input
+							try {
+								if (jsonBodyParameter) {
+									requestBody = JSON.parse(jsonBodyParameter);
+								}
+							} catch (error) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'JSON parameter needs to be valid JSON',
+									{
+										itemIndex: i,
+									}
+								);
+							}
+						}
+					} else if (bodyContentType === 'form-urlencoded') {
+						// Process form-urlencoded
+						requestBody = {};
+						bodyParameters.forEach((param) => {
+							if (param.name) {
+								requestBody[param.name] = param.value;
+							}
+						});
+					} else if (bodyContentType === 'raw') {
+						// Process raw body
+						requestBody = rawBody;
+					}
+				}
+
 				let credentials: any = {};
 				if (authentication !== 'none') {
 					try {
@@ -129,16 +245,40 @@ export class HttpBin implements INodeType {
 						credentials = {};
 					}
 				}
+
 				const requestOptions: any = {
 					method: operation.toUpperCase(),
 					url,
 					headers: {
 						'Accept': 'application/json',
 						'Content-Type': 'application/json',
-						...headers,
+						...additionalHeaders,
 					},
 					resolveWithFullResponse: true,
 				};
+
+				// Add query parameters
+				if (Object.keys(queryParams).length > 0) {
+					requestOptions.qs = queryParams;
+				}
+
+				// Add body based on content type
+				if (requestBody !== undefined) {
+					if (bodyContentType === 'json') {
+						requestOptions.body = requestBody;
+						requestOptions.json = true;
+					} else if (bodyContentType === 'form-urlencoded') {
+						requestOptions.form = requestBody;
+						requestOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+					} else if (bodyContentType === 'raw') {
+						requestOptions.body = requestBody;
+						requestOptions.json = false;
+						if (rawContentType) {
+							requestOptions.headers['Content-Type'] = rawContentType;
+						}
+					}
+				}
+
 				if (credentials && Object.keys(credentials).length > 0) {
 					if (credentials.authType === 'bearer' && credentials.bearerToken) {
 						requestOptions.headers.Authorization = `Bearer ${credentials.bearerToken}`;
@@ -162,6 +302,7 @@ export class HttpBin implements INodeType {
 						}
 					}
 				}
+
 				const response = await this.helpers.httpRequest(requestOptions);
 				returnData.push({
 					json: response,

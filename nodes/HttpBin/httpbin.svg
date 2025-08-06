@@ -1,18 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0"
-    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJN
-AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAHdElN
-RQfmBg4UAC/TqOZZAAACA0lEQVRIx5XVv09TURwF8M+jFHDSyRkGFhPAEfyRdDHi5uriXyDoYgKT
-MJDWzUT/Ahf/AiOEpajEgCESmpiYmDCxGowDTYE+h76+vte+15Zzk753b7733HNO772PbEw7ECba
-genswtEcgl0/PHARV72066YrIDSZ6k8KBym4741r0XsB284TdUX8chn1zrzwJUmw4KFXPqjFE0Y0
-u5YKEhpmfLZuy7f2wLKGI8WhDRYdaVhurdTCidmU5P44N+skaaGQH1IfFFrOYMotT932zNgQExve
-OfTeT8dtBceO3TFlOyopY7UPxV+/fWyn3Y0xrFhJjZWFXhs12pKdRO9ObGSuyB8Xbd9JjMjDc6HQ
-IcrKqAiVe8vyCEJPrGBWxZYqqtZt9RbmHabAvAAVdVUlJTvWshbMt0AYn40OmlchSKOePTyYIMQn
-rb8yI8TsDCrRs4od7Jv3KOoPGWKboBqp2LN3FQvdO7EPshSsRSTXrSop2cSiiUGkG/bj2JqaQiHW
-4nv50mFcu28j30KQarAnEPhuzvwwGYQ975vx7+JwGXTjTIAzoYlhCArR5d0KkfauqJAVY6+FG5hD
-OS6veqyCuSiTAQT/jKmlQtyxIBCoZV28HQvN6LuQvJFC4xjvibfYOZUdUXd9taTWJbOubiIVXmjG
-W/fs9qpZcpr6pOe1U0udSf8BR7ef4yxyOskAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjItMDYtMTRU
-MTc6MDA6NDcrMDM6MDBfo1sRAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIyLTA2LTE0VDE3OjAwOjQ3
-KzAzOjAwLv7jrQAAAABJRU5ErkJggg==" />
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield background -->
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lockGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0E0E0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield -->
+  <path d="M16 2 L28 8 L28 16 C28 22 22 28 16 30 C10 28 4 22 4 16 L4 8 Z"
+        fill="url(#shieldGradient)"
+        stroke="#1B5E20"
+        stroke-width="1"/>
+
+  <!-- HTTP text -->
+  <text x="16" y="14"
+        font-family="Arial, sans-serif"
+        font-size="8"
+        font-weight="bold"
+        text-anchor="middle"
+        fill="white">HTTP</text>
+
+  <!-- Lock symbol -->
+  <rect x="12" y="18" width="8" height="6" rx="1"
+        fill="url(#lockGradient)"
+        stroke="#424242"
+        stroke-width="0.5"/>
+  <rect x="14" y="16" width="4" height="3" rx="1"
+        fill="url(#lockGradient)"
+        stroke="#424242"
+        stroke-width="0.5"/>
+  <circle cx="16" cy="20" r="1" fill="#424242"/>
+
+  <!-- HIPAA indicator -->
+  <text x="16" y="28"
+        font-family="Arial, sans-serif"
+        font-size="4"
+        font-weight="bold"
+        text-anchor="middle"
+        fill="white">HIPAA</text>
 </svg>
